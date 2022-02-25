@@ -1,6 +1,8 @@
 package no.hvl.dat102.adt;
 
 public interface DobbelKjedetOrdnetListeADT<T> {
+	
+	
 
 	/**
 	 * 
@@ -28,5 +30,10 @@ public interface DobbelKjedetOrdnetListeADT<T> {
 	 * @return returnerer antall elementer
 	 */
 	int antall();
+	
+	
+	boolean fins(T el);
+	
+	void visListe();
 
 }
