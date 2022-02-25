@@ -24,9 +24,9 @@ public class KjedetOrdnetListe<T extends Comparable<T>> implements OrdnetListeAD
 	public T fjernFoerste() {
 		if (erTom())
 			throw new EmptyCollectionException("ordnet liste");
-
-		T resultat = null;
-		// ...Fyll ut
+		
+		T resultat = foerste.getElement();
+		foerste = foerste.getNeste();
 		return resultat;
 	}
 
@@ -35,8 +35,19 @@ public class KjedetOrdnetListe<T extends Comparable<T>> implements OrdnetListeAD
 		if (erTom())
 			throw new EmptyCollectionException("ordnet liste");
 
-		T resultat = null;
-		// ...Fyll ut
+		T resultat = siste.getElement();
+		
+		LinearNode<T> node = foerste;
+		LinearNode<T> prev = null;
+		
+		for (; node.getNeste() != null; prev = node, node = node.getNeste());
+		
+		// node peker nå til siste elementet
+		// prev peker nå til elementet før siste
+		
+		prev.setNeste(null);
+		siste = prev;
+		
 		return resultat;
 	}
 
@@ -72,8 +83,45 @@ public class KjedetOrdnetListe<T extends Comparable<T>> implements OrdnetListeAD
 
 	@Override
 	public void leggTil(T element) {
-
-		// ...Fyll ut
+		if (erTom()) {
+			foerste = new LinearNode<T>(element);
+			siste = foerste;
+			antall = 1;
+			return;
+		}
+		
+		if (foerste.getElement().compareTo(element) < 0) {
+			LinearNode<T> nyNode = new LinearNode<T>(element);
+			nyNode.setNeste(foerste);
+			foerste = nyNode;
+			return;
+		}
+		
+		if (siste.getElement().compareTo(element) > 0) {
+			LinearNode<T> nyNode = new LinearNode<T>(element);
+			siste.setNeste(nyNode);
+			siste = nyNode;
+			return;
+		}
+		
+		for (LinearNode<T> node = foerste;
+			node.getNeste() != null;
+			node = node.getNeste()) {
+			// Hvis elementet er likt noden sitt element, eller hvis
+			// node.getElement() er mindre enn element OG neste.getElement() er
+			// større enn element, da kan vi sette inn.
+			if ((node.getElement().compareTo(element) == 0) ||
+				(node.getNeste() != null &&
+				node.getElement().compareTo(element) < 0 &&
+				node.getNeste().getElement().compareTo(element) > 0)) {
+				// Vi kan sette inn her siden elementene er like
+				LinearNode<T> newNode = new LinearNode<T>(element);
+				newNode.setNeste(node.getNeste());
+				node.setNeste(newNode);
+				antall++;
+				return;
+			}
+		}
 	}
 
 	@Override

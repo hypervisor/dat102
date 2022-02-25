@@ -49,10 +49,15 @@ public class Person implements Comparable<Person> {
 	}
 
 	public int compareTo(Person denAndrePersonen) {
-		int resultat = 0;
-		//... Fyll ut
-		//Kall på compareTo i Stringklassen
-		return resultat;
-	}//
+        int resultat = Integer.compare(foedselsaar, denAndrePersonen.foedselsaar);
+        if (resultat == 0) {
+                resultat = etternavn.compareTo(denAndrePersonen.etternavn);
+                if(resultat == 0) {
+                    return fornavn.compareTo(denAndrePersonen.fornavn);
+                }
+                return resultat;
+        }
+        return resultat;
+    }
 
 }// class

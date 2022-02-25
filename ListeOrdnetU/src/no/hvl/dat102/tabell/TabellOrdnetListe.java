@@ -24,8 +24,9 @@ public class TabellOrdnetListe<T extends Comparable<T>> implements OrdnetListeAD
 		if (erTom())
 			throw new EmptyCollectionException("ordnet liste");
 
-		T resultat = null;
-		// ... Fyll ut
+		T resultat = liste[bak - 1];
+		liste[bak - 1] = null;
+		bak--;
 		return resultat;
 	}
 
@@ -34,8 +35,11 @@ public class TabellOrdnetListe<T extends Comparable<T>> implements OrdnetListeAD
 		if (erTom())
 			throw new EmptyCollectionException("ordnet liste");
 
-		T resultat = null;
-		// ... Fyll ut
+		T resultat = liste[0];
+		liste[0] = null;
+		for (int i = 1; i < bak; i++) {
+			liste[i - 1] = liste[i];
+		}
 		return resultat;
 	}
 
@@ -53,10 +57,7 @@ public class TabellOrdnetListe<T extends Comparable<T>> implements OrdnetListeAD
 		if (erTom())
 			throw new EmptyCollectionException("ordnet liste");
 		
-		T resultat = null;
-		// ...Fyll ut
-
-		return resultat;
+		return liste[bak - 1];
 	}
 
 	@Override
@@ -71,9 +72,33 @@ public class TabellOrdnetListe<T extends Comparable<T>> implements OrdnetListeAD
 
 	@Override
 	public void leggTil(T element) {
-
-		// ...Fyll ut
-	}
+        if(bak == liste.length) {
+            utvid();
+        }
+        
+        if(bak == 0) {
+            liste[bak] = element;
+            bak++;
+            return;
+        }
+        
+        if(element.compareTo(liste[bak-1]) > 0) {
+            liste[bak] = element;
+            bak++;
+            return;
+        }
+        
+        for (int n = 0; n < bak; n++) {
+            if(element.compareTo(liste[n]) < 0)  {
+                for(int i = bak; i > n; i--) {
+                    liste[i] = liste[i-1];
+                }
+                liste[n] = element;
+                bak++;
+                return;
+            }
+        }
+    }
 
 	@Override
 	public boolean inneholder(T element) {
@@ -82,15 +107,25 @@ public class TabellOrdnetListe<T extends Comparable<T>> implements OrdnetListeAD
 
 	@Override
 	public T fjern(T element) {
-		// ...Fyll ut
-		return element;
-
+		int posisjon = finn(element);
+		if (posisjon == IKKE_FUNNET)
+			return null;
+		
+		for (int i = posisjon; i < bak - 1; i++) {
+			liste[i] = liste[i + 1];
+		}
+		bak--;
+        
+        return element;
 	}
 
 	private int finn(T el) {
-		int i = 0, resultat = IKKE_FUNNET;
-		// ...Fyll ut
-		return resultat;
+		for (int i = 0; i < bak; ++i) {
+			if (liste[i] == el) {
+				return i;
+			}
+		}
+		return IKKE_FUNNET;
 	}
 
 	public String toString() {
