@@ -27,6 +27,7 @@ public class KjedetOrdnetListe<T extends Comparable<T>> implements OrdnetListeAD
 		
 		T resultat = foerste.getElement();
 		foerste = foerste.getNeste();
+		antall--;
 		return resultat;
 	}
 
@@ -45,9 +46,12 @@ public class KjedetOrdnetListe<T extends Comparable<T>> implements OrdnetListeAD
 		// node peker nå til siste elementet
 		// prev peker nå til elementet før siste
 		
-		prev.setNeste(null);
+		if (prev != null)
+			prev.setNeste(null);
+		
 		siste = prev;
 		
+		antall--;
 		return resultat;
 	}
 
@@ -80,49 +84,45 @@ public class KjedetOrdnetListe<T extends Comparable<T>> implements OrdnetListeAD
 	public int antall() {
 		return antall;
 	}
-
-	@Override
+	
 	public void leggTil(T element) {
-		if (erTom()) {
-			foerste = new LinearNode<T>(element);
-			siste = foerste;
-			antall = 1;
-			return;
-		}
-		
-		if (foerste.getElement().compareTo(element) < 0) {
-			LinearNode<T> nyNode = new LinearNode<T>(element);
-			nyNode.setNeste(foerste);
-			foerste = nyNode;
-			return;
-		}
-		
-		if (siste.getElement().compareTo(element) > 0) {
-			LinearNode<T> nyNode = new LinearNode<T>(element);
-			siste.setNeste(nyNode);
-			siste = nyNode;
-			return;
-		}
-		
-		for (LinearNode<T> node = foerste;
-			node.getNeste() != null;
-			node = node.getNeste()) {
-			// Hvis elementet er likt noden sitt element, eller hvis
-			// node.getElement() er mindre enn element OG neste.getElement() er
-			// større enn element, da kan vi sette inn.
-			if ((node.getElement().compareTo(element) == 0) ||
-				(node.getNeste() != null &&
-				node.getElement().compareTo(element) < 0 &&
-				node.getNeste().getElement().compareTo(element) > 0)) {
-				// Vi kan sette inn her siden elementene er like
-				LinearNode<T> newNode = new LinearNode<T>(element);
-				newNode.setNeste(node.getNeste());
-				node.setNeste(newNode);
-				antall++;
-				return;
-			}
-		}
-	}
+        LinearNode<T> ny = new LinearNode<T>(element);
+        
+        if (erTom()) {
+            foerste = ny;
+            siste = ny;
+            antall++;
+            return;
+        }
+        
+        LinearNode<T> denne = foerste, forrige = foerste;
+        if (element.compareTo(denne.getElement()) < 0) {
+            ny.setNeste(foerste);
+            foerste = ny;
+            antall++;
+            
+            return;
+        }
+        
+        if (element.compareTo(siste.getElement()) > 0) {
+            siste.setNeste(ny);
+            siste = ny;
+            antall++;
+            
+            return;
+        }
+        
+        while (denne != null && element.compareTo(denne.getElement()) > 0) {
+            forrige = denne;
+            denne = denne.getNeste();
+        }
+        
+        if (denne != null && forrige != null) {
+            forrige.setNeste(ny);
+            ny.setNeste(denne);
+            antall++;
+        }
+    }
 
 	@Override
 	public T fjern(T element) {

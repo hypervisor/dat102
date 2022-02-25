@@ -77,7 +77,7 @@ public class TabellOrdnetListe<T extends Comparable<T>> implements OrdnetListeAD
         }
         
         if(bak == 0) {
-            liste[bak] = element;
+            liste[0] = element;
             bak++;
             return;
         }
