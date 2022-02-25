@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import no.hvl.dat102.exception.EmptyCollectionException;
+import no.hvl.dat102.klient.SimpleSourceParser;
 import no.hvl.dat102.adt.StabelADT;
 
 /**
@@ -153,5 +154,17 @@ public abstract class StabelADTTest {
 		Assertions.assertThrows(EmptyCollectionException.class, () -> {
 			stabel.pop();
 		});
+	}
+	
+	@Test
+	public boolean test1() {
+		SimpleSourceParser fuck = new SimpleSourceParser();
+		return fuck.erBalansert("{{{[[[]]]}}}(())");
+	}
+	
+	@Test
+	public boolean test2() {
+		SimpleSourceParser fuck = new SimpleSourceParser();
+		return fuck.erBalansert("{{{[[(]]]}})(())");
 	}
 }
